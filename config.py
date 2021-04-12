@@ -1,0 +1,7 @@
+url = 'http://127.0.0.1:8545'
+input_file = './example/0x2eae96e6bf99565c9d8ce978b24c3fc3b552dc7b-with-decoded-input.json'
+transactions_csv = './example/0x2eae96e6bf99565c9d8ce978b24c3fc3b552dc7b.csv'
+source_code = './example/contracts/0x2eae96e6bf99565c9d8ce978b24c3fc3b552dc7b.sol'
+SafeMath = './example/build/contracts/SafeMath.json'
+ShiftCashIco = './example/build/contracts/ShiftCashIco.json'
+ShiftCashToken = './example/build/contracts/ShiftCashToken.json'
