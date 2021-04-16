@@ -33,6 +33,7 @@ if __name__ == "__main__":
     transactions = data['transactions']
 
     transaction_list = []
+    transaction_list_error = []
 
     for transaction in transactions:
         key = list(transaction.keys())[0]
@@ -51,7 +52,7 @@ if __name__ == "__main__":
                 transaction_list.append(trans)
             except Exception as error:
                 trans = ['Send Ether', from_add, to_add, wei, 'error', error]
-                transaction_list.append(trans) 
+                transaction_list_error.append(trans) 
         elif transaction.get(key).get('name') != 'init':
             func_name = transaction.get(key).get('name')
             func_params = transaction.get(key).get('params')
@@ -71,12 +72,15 @@ if __name__ == "__main__":
                 transaction_list.append(trans)
             except Exception as error:
                 trans = ['Contract Function', func_name, func_params, encoded, 'error', error]
-                transaction_list.append(trans)
+                transaction_list_error.append(trans)
         else:
             continue
 
-    with open('transactions.pickle', 'wb') as handle:
+    with open(config.root + '/transactions.pickle', 'wb') as handle:
             pickle.dump(transaction_list, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open(config.root + '/transactions_error.pickle', 'wb') as handle:
+            pickle.dump(transaction_list_error, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     
 

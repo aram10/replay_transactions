@@ -29,7 +29,7 @@ def get_accounts_appeared_in_transaction_history(input_json):
 
 
     addresses = addresses.union(to_addresses)
-    with open("addresses.pickle", 'wb') as handle:
+    with open(config.root + "/addresses.pickle", 'wb') as handle:
             pickle.dump(addresses, handle, protocol=pickle.HIGHEST_PROTOCOL)
     return (from_addresses, to_addresses, addresses)
 

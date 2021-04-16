@@ -32,20 +32,21 @@ def create_account_mapping(address_from_transaction, address_from_ganache):
 
 
 if __name__ == "__main__":
-    res = pickle.load(open("addresses.pickle", "rb"))
+    path = config.root + '/addresses.pickle'
+    res = pickle.load(open(path, "rb"))
     web3 = get_web3(config.url)
     accounts = web3.eth.get_accounts()
     mapping = create_account_mapping(list(res), accounts)
 
-    csv_file = 'mapping.csv'
-    pickle_file = 'mapping.pickle'
+    csv_file_path = config.root + '/mapping.csv'
+    pickle_file_path = config.root + '/mapping.pickle'
     
     try:
-        with open(csv_file, 'w') as csvfile:
+        with open(csv_file_path, 'w') as csvfile:
             writer = csv.writer(csvfile)
             for key, value in mapping.items():
                 writer.writerow([key, value])
-        with open(pickle_file, 'wb') as handle:
+        with open(pickle_file_path, 'wb') as handle:
             pickle.dump(mapping, handle, protocol=pickle.HIGHEST_PROTOCOL)
     except IOError:
         print("I/O error")
