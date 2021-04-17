@@ -35,7 +35,7 @@ def get_accounts_appeared_in_transaction_history(input_json):
 
 
 def start_ganache_with_given_number_addresses(addresses_set):
-    subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '100'])
+    subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '500'])
 
 if __name__ == "__main__":
     res = get_accounts_appeared_in_transaction_history(config.input_file)

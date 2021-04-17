@@ -21,13 +21,13 @@ if __name__ == "__main__":
     web3.eth.defaultAccount = web3.eth.accounts[0]
     
     #contract
-    address = web3.toChecksumAddress('0x728aD258cdCEA62205d3a255c0fA03207dE81825')
+    address = web3.toChecksumAddress(config.contract_address)
     abi = data['abi']
     contract = web3.eth.contract(address, abi=abi)
 
     df = pd.read_csv(config.transactions_csv, index_col=False)
 
-    with open('mapping.pickle', 'rb') as handle:
+    with open(config.root + '/mapping.pickle', 'rb') as handle:
         mapping = pickle.load(handle)
 
     transactions = data['transactions']
@@ -43,15 +43,17 @@ if __name__ == "__main__":
                 continue
             ether = df.loc[df['Txhash'] == key]['Value_IN(ETH)'].values[0]
             wei = web3.toWei(ether, "ether")
-            from_add = web3.toChecksumAddress(mapping.get(df.loc[df['Txhash'] == key]['From'].values[0]))
-            to_add = web3.toChecksumAddress(mapping.get(df.loc[df['Txhash'] == key]['To'].values[0]))
+            from_add_original = df.loc[df['Txhash'] == key]['From'].values[0]
+            to_add_original = df.loc[df['Txhash'] == key]['To'].values[0]
+            from_add = web3.toChecksumAddress(mapping.get(from_add_original))
+            to_add = web3.toChecksumAddress(mapping.get(to_add_original))
             try:
                 tx_hash = web3.eth.sendTransaction({'from': from_add, 'to': to_add, 'value': wei})
                 tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-                trans = ['Send Ether', from_add, to_add, wei, tx_hash, tx_receipt]
+                trans = ['Send Ether', from_add_original, to_add_original, wei, tx_hash, tx_receipt]
                 transaction_list.append(trans)
             except Exception as error:
-                trans = ['Send Ether', from_add, to_add, wei, 'error', error]
+                trans = ['Send Ether', from_add_original, to_add_original, wei, 'error', error]
                 transaction_list_error.append(trans) 
         elif transaction.get(key).get('name') != 'init':
             func_name = transaction.get(key).get('name')
@@ -68,10 +70,10 @@ if __name__ == "__main__":
             try:
                 tx_hash = web3.eth.sendTransaction({'to': address, 'data': encoded})
                 tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-                trans = ['Contract Function', func_name, func_params, encoded, tx_hash, tx_receipt]
+                trans = ['Contract Function', key, func_name, func_params, encoded, tx_hash, tx_receipt]
                 transaction_list.append(trans)
             except Exception as error:
-                trans = ['Contract Function', func_name, func_params, encoded, 'error', error]
+                trans = ['Contract Function', key, func_name, func_params, encoded, 'error', error]
                 transaction_list_error.append(trans)
         else:
             continue
@@ -81,11 +83,3 @@ if __name__ == "__main__":
 
     with open(config.root + '/transactions_error.pickle', 'wb') as handle:
             pickle.dump(transaction_list_error, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-    
-
-        
-
-
-
-
