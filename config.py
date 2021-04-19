@@ -3,7 +3,6 @@ _fixed = False;
 
 root = './' + hashcode + '-fixed' if _fixed else './' + hashcode
 url = 'http://127.0.0.1:8545'
-root = './' + hashcode
 input_file = root + '/' + hashcode + '-with-decoded-input.json'
 transactions_csv = root + '/' + hashcode + '.csv'
 source_code = root + '/contracts/' + hashcode + '.sol'
