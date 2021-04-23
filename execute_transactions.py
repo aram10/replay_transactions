@@ -72,11 +72,7 @@ if __name__ == "__main__":
                 if isAddressList(param):
                     adds = []
                     for add in param:
-                        print(add)
-                        print(mapping.get(add))
-                        newadd = web3.toChecksumAddress(mapping.get(add))
-                        print(newadd)
-                        adds.append(newadd)
+                        adds.append(web3.toChecksumAddress(mapping.get(add)))
                     params_list.append(adds)
                     continue
                 if web3.isAddress(param):
