@@ -26,6 +26,10 @@ def get_accounts_appeared_in_transaction_history(input_json):
                 for subentry in entry["params"]:
                     if subentry['type'] == 'address' and subentry['value'] not in addresses:
                         addresses.add(subentry['value'])
+                    elif subentry['type'] == 'address[]':
+                        for address in subentry['value']:
+                            if address not in addresses:
+                                addresses.add(address)
 
 
     addresses = addresses.union(to_addresses)
@@ -35,7 +39,7 @@ def get_accounts_appeared_in_transaction_history(input_json):
 
 
 def start_ganache_with_given_number_addresses(addresses_set):
-    subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '500'])
+    subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '15000'])
 
 if __name__ == "__main__":
     res = get_accounts_appeared_in_transaction_history(config.input_file)

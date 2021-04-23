@@ -11,6 +11,14 @@ from web3 import exceptions
 def get_web3(url_string):
     return Web3(HTTPProvider(url_string))
 
+def isAddressList(add_list):
+    if not isinstance(add_list, list):
+        return False
+    for add in add_list:
+        if not web3.isAddress(add):
+            return False
+    return True
+
 if __name__ == "__main__":
 
     with open(config.input_file) as f:
@@ -61,6 +69,16 @@ if __name__ == "__main__":
             params_list = []
             for val in func_params:
                 param = val['value']
+                if isAddressList(param):
+                    adds = []
+                    for add in param:
+                        print(add)
+                        print(mapping.get(add))
+                        newadd = web3.toChecksumAddress(mapping.get(add))
+                        print(newadd)
+                        adds.append(newadd)
+                    params_list.append(adds)
+                    continue
                 if web3.isAddress(param):
                     param = web3.toChecksumAddress(mapping.get(param))
                 if val['type'].startswith('uint'):
