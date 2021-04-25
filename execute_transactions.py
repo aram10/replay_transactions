@@ -4,6 +4,7 @@ import config
 import pandas as pd
 import pickle
 from web3 import exceptions
+import numpy as np
 
 
 
@@ -50,6 +51,8 @@ if __name__ == "__main__":
             if pd.isnull(df.loc[df['Txhash'] == key]['To'].values[0]):
                 continue
             ether = df.loc[df['Txhash'] == key]['Value_IN(ETH)'].values[0]
+            ether = ether.item()
+
             wei = web3.toWei(ether, "ether")
             from_add_original = df.loc[df['Txhash'] == key]['From'].values[0]
             to_add_original = df.loc[df['Txhash'] == key]['To'].values[0]
