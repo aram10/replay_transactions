@@ -46,6 +46,7 @@ if __name__ == "__main__":
 
     for transaction in transactions:
         key = list(transaction.keys())[0]
+        original_hash = {"original_hash" : key}
         if transaction.get(key) == "None":
             #skip contract creation
             if pd.isnull(df.loc[df['Txhash'] == key]['To'].values[0]):
@@ -61,10 +62,10 @@ if __name__ == "__main__":
             try:
                 tx_hash = web3.eth.sendTransaction({'from': from_add, 'to': to_add, 'value': wei})
                 tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-                trans = ['Send Ether', from_add_original, to_add_original, wei, tx_hash, tx_receipt]
+                trans = ['Send Ether', original_hash, from_add_original, to_add_original, wei, tx_hash, tx_receipt]
                 transaction_list.append(trans)
             except Exception as error:
-                trans = ['Send Ether', from_add_original, to_add_original, wei, 'error', error]
+                trans = ['Send Ether', original_hash, from_add_original, to_add_original, wei, 'error', error]
                 transaction_list_error.append(trans) 
         elif transaction.get(key).get('name') != 'init':
             func_name = transaction.get(key).get('name')
@@ -87,10 +88,10 @@ if __name__ == "__main__":
             try:
                 tx_hash = web3.eth.sendTransaction({'to': address, 'data': encoded})
                 tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-                trans = ['Contract Function', key, func_name, func_params, encoded, tx_hash, tx_receipt]
+                trans = ['Contract Function', original_hash, func_name, func_params, encoded, tx_hash, tx_receipt]
                 transaction_list.append(trans)
             except Exception as error:
-                trans = ['Contract Function', key, func_name, func_params, encoded, 'error', error]
+                trans = ['Contract Function', original_hash, func_name, func_params, encoded, 'error', error]
                 transaction_list_error.append(trans)
         else:
             continue
