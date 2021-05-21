@@ -5,9 +5,7 @@ import pandas as pd
 import pickle
 from web3 import exceptions
 import numpy as np
-
-
-
+import re
 
 def get_web3(url_string):
     return Web3(HTTPProvider(url_string))
@@ -82,7 +80,12 @@ if __name__ == "__main__":
                 if web3.isAddress(param):
                     param = web3.toChecksumAddress(mapping.get(param))
                 if val['type'].startswith('uint'):
-                    param = int(param)
+                    regex = r".+\[.*\]"
+                    z = re.match(regex, val['type'])
+                    if z:
+                        param = [int(i) for i in param]
+                    else:
+                        param = int(param)
                 params_list.append(param)
             encoded = contract.encodeABI(fn_name=func_name, args=params_list)
             try:
