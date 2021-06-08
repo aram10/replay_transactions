@@ -4,6 +4,7 @@ import os
 import json
 import pickle
 import config
+import sys
 
 def get_web3(url_string):
     return Web3(HTTPProvider(url_string))
@@ -38,11 +39,17 @@ def get_accounts_appeared_in_transaction_history(input_json):
     return (from_addresses, to_addresses, addresses)
 
 
-def start_ganache_with_given_number_addresses(addresses_set):
-    subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '15000'])
+def start_ganache_with_given_number_addresses(addresses_set, port=None):
+    if port == None:
+        subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '15000', '-l', '0x1fffffffffffff', '--allowUnlimitedContractSize'])
+    else:
+        subprocess.run(['ganache-cli', '-a', str(len(addresses_set)), '-e', '15000', '-l', '0x1fffffffffffff', '--allowUnlimitedContractSize', '-p', port])
+    
 
 if __name__ == "__main__":
     res = get_accounts_appeared_in_transaction_history(config.input_file)
-    start_ganache_with_given_number_addresses(res[2])
-
-
+    arg_lis = sys.argv[1:]
+    if(len(arg_lis) > 0):
+        start_ganache_with_given_number_addresses(res[2], arg_lis[0])
+    else:
+        start_ganache_with_given_number_addresses(res[2])
